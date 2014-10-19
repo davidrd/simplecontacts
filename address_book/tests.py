@@ -28,6 +28,12 @@ class test_users(unittest.TestCase):
 
 	# try to get a user by email
 	def test_get_user_by_email(self):
+
+		# add a new user Spongebob to the db
+		new_user_name = "Spongebob"
+		new_user_email = "Spongebob@bikinibottom.com"
+		contacts.insert_user(new_user_name, new_user_email)
+
 		c = Client()
 		# a get with an email arg should retrieve that user
 		email_to_get = "Spongebob@bikinibottom.com"
