@@ -65,8 +65,14 @@ class test_users(unittest.TestCase):
 		new_email = "sherlockholmes@scotlandyard.ca"
 		# post our new user to the server
 		response = c.post('/users/', {'name': new_name, 'email': new_email})
+
 		# want a 200 response code
 		self.assertEqual(response.status_code, 200)
+
+		# make sure he's in the db
+		find_user = contacts.get_users_by_email(new_email)
+		self.assertEqual(new_name, find_user[0].name)
+		self.assertEqual(new_email, find_user[0].email)
 
 class test_contacts(unittest.TestCase):
 
@@ -104,3 +110,34 @@ class test_contacts(unittest.TestCase):
 		# want a 200 response code
 		self.assertEqual(response.status_code, 200)
 
+	# do this later
+	# def test_add_bad_contact(self):
+
+	def test_add_contact(self):
+		# insert a user
+		user_name = "Alton Brown"
+		user_email = "altonbrown@foodnetwork.com"
+		inserted_user = contacts.insert_user(user_name, user_email)
+
+		# our new contact to add
+		contact_name = "Chef John"
+		address = ""
+		phone_number = "1+555-444"
+		email = "chefjohn@yt.com"
+
+		c = Client()
+		response = c.post('/contacts/', {'user_email': user_email, 'contact_name': contact_name, 'address': address, 'phone_number': phone_number, 'email': email})
+
+		# make sure he's in the db
+		# get the contacts for Alton Brown
+		list_of_contacts = contacts.get_contacts(user_email)
+
+		# hopefully we receive one contact
+		self.assertEqual(len(list_of_contacts), 1)
+		
+		# check the contact's values
+		first = list_of_contacts[0]
+		self.assertEqual(first.contact_name, contact_name)
+		self.assertEqual(first.address, address)
+		self.assertEqual(first.phone_number, phone_number)
+		self.assertEqual(first.email, email)

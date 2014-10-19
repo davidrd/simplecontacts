@@ -52,6 +52,24 @@ def address_contacts(request):
 			# return it
 			return HttpResponse(json.dumps(ret), content_type="application/json")
 
+	# adding some contact
+	if request.method == "POST":
+		# data is in the post payload
+		user_email = request.POST["user_email"]
+		contact_name = request.POST["contact_name"]
+		address = request.POST["address"]
+		phone_number = request.POST["phone_number"]
+		email = request.POST["email"]
+
+		ret = contacts.add_contact(user_email, contact_name, address, phone_number, email)
+		
+		# if insertion failed return error code
+		if ret == None:
+			return HttpResponse(status=401)
+		# valid insert
+		else:
+			return HttpResponse(status=200)
+
 # given a Contacts QuerySet, return that QuerySet in dictionary format
 def contacts_to_json(find_user):
 	d = {}
